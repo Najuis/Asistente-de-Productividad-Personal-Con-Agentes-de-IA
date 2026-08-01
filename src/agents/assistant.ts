@@ -98,10 +98,13 @@ export class AssistantAgent {
         messages.push({
           role: "assistant",
           content: `Ejecutando ${call.name}`,
+          toolCalls: result.toolCalls,
         });
         messages.push({
-          role: "user",
-          content: `Resultado de ${call.name}: ${output}`,
+          role: "tool",
+          content: output,
+          toolCallId: call.id,
+          name: call.name,
         });
       }
     }

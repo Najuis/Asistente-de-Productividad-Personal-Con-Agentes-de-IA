@@ -22,7 +22,8 @@ Personal productivity chatbot: an orchestrator that routes messages to a tool-us
 
 - Entry `src/index.ts` → `Orchestrator` (`src/orchestrator/orchestrator.ts`) → either `AssistantAgent` (tool loop, `src/agents/assistant.ts`) or a direct provider chat.
 - Intent detection is a **Spanish keyword regex** in `orchestrator.ts:13`; new intent keywords must be added there.
-- New tools require two edits in `src/agents/assistant.ts`: a `ToolDefinition` entry in `ASSISTANT_TOOLS` **and** a case in the `executeTool` switch. Tool results are fed back to the model as user messages; the loop caps at 5 iterations.
+- New tools require two edits in `src/agents/assistant.ts`: a `ToolDefinition` entry in `ASSISTANT_TOOLS` **and** a case in the `executeTool` switch. Tool results are fed back to the model as `tool`-role messages (with `toolCallId`/`name`); the loop caps at 5 iterations.
+- The `ChatMessage` abstraction supports `tool` role; providers map it to their native format: OpenAI needs `tool_call_id` on tool messages and `tool_calls` on the preceding assistant message, Ollama needs `name` on tool messages.
 - Providers (`src/providers/`) all implement the `LLMProvider` interface in `types.ts`; OpenAI and Ollama map their native tool-call formats to it.
 
 ## Data and conventions

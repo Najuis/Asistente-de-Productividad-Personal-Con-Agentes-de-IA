@@ -31,7 +31,30 @@ export class OpenAIProvider implements LLMProvider {
 
     const completion = await this.client.chat.completions.create({
       model: this.model,
-      messages: messages as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+      messages: messages.map((m) => {
+        if (m.role === "assistant" && m.toolCalls?.length) {
+          return {
+            role: "assistant" as const,
+            content: m.content,
+            tool_calls: m.toolCalls.map((tc) => ({
+              id: tc.id ?? `call_${Date.now()}_${tc.name}`,
+              type: "function" as const,
+              function: {
+                name: tc.name,
+                arguments: JSON.stringify(tc.arguments),
+              },
+            })),
+          };
+        }
+        if (m.role === "tool") {
+          return {
+            role: "tool" as const,
+            content: m.content,
+            tool_call_id: m.toolCallId ?? `call_${Date.now()}`,
+          };
+        }
+        return { role: m.role, content: m.content };
+      }),
       ...(tools?.length ? { tools } : {}),
     });
 
@@ -41,6 +64,7 @@ export class OpenAIProvider implements LLMProvider {
     return {
       content: message.content,
       toolCalls: message.tool_calls?.map((tc) => ({
+        id: tc.id,
         name: tc.function.name,
         arguments: JSON.parse(tc.function.arguments || "{}") as Record<
           string,

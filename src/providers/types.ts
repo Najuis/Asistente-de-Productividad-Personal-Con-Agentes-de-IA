@@ -1,11 +1,15 @@
-export type ChatRole = "system" | "user" | "assistant";
+export type ChatRole = "system" | "user" | "assistant" | "tool";
 
 export interface ChatMessage {
   role: ChatRole;
   content: string;
+  toolCallId?: string;
+  name?: string;
+  toolCalls?: ToolCall[];
 }
 
 export interface ToolCall {
+  id?: string;
   name: string;
   arguments: Record<string, unknown>;
 }

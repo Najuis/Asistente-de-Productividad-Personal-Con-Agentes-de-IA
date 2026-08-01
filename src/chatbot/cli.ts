@@ -8,9 +8,13 @@ export async function startChatbot(orchestrator: Orchestrator): Promise<void> {
   console.log("🤖 Asistente de productividad listo. Escribe 'salir' para terminar.\n");
 
   while (true) {
-    const input = await rl.question("Tú > ");
-    const trimmed = input.trim();
-
+    let trimmed: string;
+    try {
+      const input = await rl.question("Tú > ");
+      trimmed = input.trim();
+    } catch {
+      break;
+    }
     if (!trimmed) continue;
     if (/^(salir|exit|quit)$/i.test(trimmed)) break;
 

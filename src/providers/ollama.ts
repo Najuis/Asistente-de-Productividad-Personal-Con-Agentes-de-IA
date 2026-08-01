@@ -9,6 +9,7 @@ interface OllamaResponse {
   message?: {
     content?: string | null;
     tool_calls?: Array<{
+      id?: string;
       function: { name: string; arguments: Record<string, unknown> };
     }>;
   };
@@ -31,7 +32,21 @@ export class OllamaProvider implements LLMProvider {
   ): Promise<ChatResult> {
     const payload: Record<string, unknown> = {
       model: this.model,
-      messages,
+      messages: messages.map((m) => {
+        if (m.role === "assistant" && m.toolCalls?.length) {
+          return {
+            role: "assistant",
+            content: m.content,
+            tool_calls: m.toolCalls.map((tc) => ({
+              function: { name: tc.name, arguments: tc.arguments },
+            })),
+          };
+        }
+        if (m.role === "tool") {
+          return { role: "tool", name: m.name, content: m.content };
+        }
+        return { role: m.role, content: m.content };
+      }),
       stream: false,
     };
     if (options?.tools?.length) {
@@ -60,6 +75,7 @@ export class OllamaProvider implements LLMProvider {
     return {
       content: message.content ?? null,
       toolCalls: message.tool_calls?.map((tc) => ({
+        id: tc.id,
         name: tc.function.name,
         arguments: tc.function.arguments ?? {},
       })),
