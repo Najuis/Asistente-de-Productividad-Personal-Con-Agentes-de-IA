@@ -82,6 +82,10 @@ data/                       # notas y recordatorios (JSON, gitignored)
 
 En `src/agents/assistant.ts` se requieren dos cambios: una entrada `ToolDefinition` en `ASSISTANT_TOOLS` y un caso en el `executeTool`.
 
+## Autor
+
+**Miguel Angel Diaz Gomez** — [LinkedIn](https://www.linkedin.com/in/miguel-angel-diaz-gomez-a83102220)
+
 ## Licencia
 
 Privado / uso personal.
