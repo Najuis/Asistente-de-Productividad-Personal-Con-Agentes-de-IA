@@ -13,7 +13,11 @@ export function createProvider(name?: ProviderName, model?: string): LLMProvider
     case "openai": {
       const apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) throw new Error("OPENAI_API_KEY no está configurada");
-      return new OpenAIProvider(apiKey, model ?? process.env.OPENAI_MODEL);
+      return new OpenAIProvider(
+        apiKey,
+        model ?? process.env.OPENAI_MODEL,
+        process.env.OPENAI_BASE_URL
+      );
     }
     case "ollama":
       return new OllamaProvider(model ?? process.env.OLLAMA_MODEL);

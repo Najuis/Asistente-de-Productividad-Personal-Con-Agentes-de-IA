@@ -16,7 +16,7 @@ export class Orchestrator {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
     const needsTools =
-      /nota|apunt|guardar|recordar|recordatorio|recuerd|tarea|lista|listar|que tengo|borrar|eliminar/.test(
+      /nota|apunt|guardar|recordar|recordatorio|recuerd|tarea|lista|listar|que tengo|borrar|eliminar|abre|abrir|abriendo|proceso|procesos|matar|termina|captura|screenshot|pantalla|apaga|apagar|apagado|reinicia|reiniciar|volumen|brillo|archivo|archivos|carpeta|carpetas|directorio|sistema|memoria|disco|disco duro|red|internet|url|link|enlace|abrir web|pagina web/.test(
         text
       );
     return needsTools ? "assistant" : "chat";
