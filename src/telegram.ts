@@ -1,5 +1,6 @@
 import { createProvider } from "./providers/index.js";
 import { Orchestrator } from "./orchestrator/orchestrator.js";
+import { logActivity } from "./activity.js";
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ALLOWED = (process.env.TG_ALLOWED_CHAT ?? "")
@@ -72,6 +73,14 @@ async function handleMessage(message: {
     await call("sendChatAction", { chat_id: chatId, action: "typing" });
     const { intent, reply } = await orchestrator.handle(text);
     await call("sendMessage", { chat_id: chatId, text: reply });
+    logActivity({
+      ts: Date.now(),
+      source: "telegram",
+      id: String(chatId),
+      name: message.from?.first_name,
+      intent,
+      msgPreview: text.slice(0, 80),
+    });
     console.log(`[${intent}] chat=${chatId}: ${text.slice(0, 80)}`);
   } catch (err) {
     console.error(`Error procesando mensaje: ${(err as Error).message}`);

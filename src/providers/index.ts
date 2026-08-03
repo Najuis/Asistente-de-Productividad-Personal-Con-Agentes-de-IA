@@ -1,10 +1,11 @@
 import "dotenv/config";
 import type { LLMProvider } from "./types.js";
 import { OpenAIProvider } from "./openai.js";
+import { GeminiProvider } from "./gemini.js";
 import { OllamaProvider } from "./ollama.js";
 import { MockProvider } from "./mock.js";
 
-export type ProviderName = "openai" | "ollama" | "mock";
+export type ProviderName = "openai" | "gemini" | "ollama" | "mock";
 
 export function createProvider(name?: ProviderName, model?: string): LLMProvider {
   const providerName = name ?? (process.env.LLM_PROVIDER as ProviderName) ?? "mock";
@@ -18,6 +19,11 @@ export function createProvider(name?: ProviderName, model?: string): LLMProvider
         model ?? process.env.OPENAI_MODEL,
         process.env.OPENAI_BASE_URL
       );
+    }
+    case "gemini": {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) throw new Error("OPENAI_API_KEY no está configurada");
+      return new GeminiProvider(apiKey);
     }
     case "ollama":
       return new OllamaProvider(model ?? process.env.OLLAMA_MODEL);
