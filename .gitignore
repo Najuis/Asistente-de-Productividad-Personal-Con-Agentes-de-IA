@@ -5,3 +5,8 @@ data/
 *.log
 
 tools/
+# Archivos basura generados por CMD
+No
+Compilacion
+*.tmp
+*.err

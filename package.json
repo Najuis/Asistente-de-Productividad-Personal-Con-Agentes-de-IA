@@ -10,7 +10,8 @@
     "serve": "node dist/server.js",
     "bot": "node dist/telegram.js",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:all": "concurrently -c \"cyan,magenta\" -n \"WEB,BOT\" \"npm run serve\" \"npm run bot\""
   },
   "dependencies": {
     "@google/genai": "^2.15.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
+    "concurrently": "^10.0.7",
     "pm2": "^7.0.3",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
